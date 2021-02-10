@@ -1,4 +1,4 @@
-import cv2 as cv 
+import cv2 as cv
 import numpy as np
 import scipy
 import math
@@ -55,9 +55,9 @@ get_facetexts = opt.facetexts
 boxbuffer = opt.boxbuffer
 
 numframesmade = 0
-n = start
+#n = start
 
-print step
+print(step)
 
 startx = 0
 endx = myshape[1]
@@ -99,15 +99,17 @@ lhand_window = []
 
 original_queue = []
 
-n = start
-while n <= end:
-	print n
+#n = start
+
+def graph_fn(n):
+
+	print(n)
 	framesmadestr = '%06d' % numframesmade
 
 	filebase_name = os.path.splitext(frames[n])[0]
 	key_name = os.path.join(keypoints_dir, filebase_name)
 	frame_name = os.path.join(frames_dir, frames[n])
-	
+
 	posepts = []
 
 	### try yaml
@@ -248,3 +250,9 @@ while n <= end:
 
 		numframesmade += 1
 	n += step
+
+import multiprocessing
+
+if __name__ == '__main__':
+        with multiprocessing.Pool(20) as p:
+                p.map(graph_fn, range(start, end, step))

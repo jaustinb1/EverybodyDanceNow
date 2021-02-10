@@ -1,4 +1,4 @@
-### Copyright (C) 2017 NVIDIA Corporation. All rights reserved. 
+### Copyright (C) 2017 NVIDIA Corporation. All rights reserved.
 ### Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 import time
 from collections import OrderedDict
@@ -19,8 +19,8 @@ if opt.continue_train:
         start_epoch, epoch_iter = np.loadtxt(iter_path , delimiter=',', dtype=int)
     except:
         start_epoch, epoch_iter = 1, 0
-    print('Resuming from epoch %d at iteration %d' % (start_epoch, epoch_iter))        
-else:    
+    print('Resuming from epoch %d at iteration %d' % (start_epoch, epoch_iter))
+else:
     start_epoch, epoch_iter = 1, 0
 
 if opt.debug:
@@ -39,7 +39,7 @@ print('#training images = %d' % dataset_size)
 model = create_model_fullts(opt)
 visualizer = Visualizer(opt)
 
-total_steps = (start_epoch-1) * dataset_size + epoch_iter    
+total_steps = (start_epoch-1) * dataset_size + epoch_iter
 for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
     epoch_start_time = time.time()
     if epoch != start_epoch:
@@ -82,7 +82,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
             loss_D.backward()
             model.module.optimizer_D.step()
 
-            #call(["nvidia-smi", "--format=csv", "--query-gpu=memory.used,memory.free"]) 
+            #call(["nvidia-smi", "--format=csv", "--query-gpu=memory.used,memory.free"])
 
             ############## Display results and errors ##########
             ### print out errors
@@ -109,7 +109,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
                     res_face = generated[2].data[0]
                     syn_face = generated[1].data[0]
                     preres = generated[3].data[0]
-                    visuals = OrderedDict([('input_label', util.tensor2im(inputs[0], normalize=False)),
+                    visuals= OrderedDict([('input_label', util.tensor2im(inputs[0], normalize=False)),
                                            ('synthesized_image', util.tensor2im(syn)),
                                            ('synthesized_face', util.tensor2im(syn_face)),
                                            ('residual', util.tensor2im(res_face)),
@@ -123,17 +123,17 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         ### save latest model
         if total_steps % opt.save_latest_freq == 0:
             print('saving the latest model (epoch %d, total_steps %d)' % (epoch, total_steps))
-            model.module.save('latest')            
+            model.module.save('latest')
             np.savetxt(iter_path, (epoch, epoch_iter), delimiter=',', fmt='%d')
-       
-    # end of epoch  
+
+    # end of epoch
     iter_end_time = time.time()
     print('End of epoch %d / %d \t Time Taken: %d sec' %
           (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
 
     ### save model for this epoch
     if epoch % opt.save_epoch_freq == 0:
-        print('saving the model at the end of epoch %d, iters %d' % (epoch, total_steps))        
+        print('saving the model at the end of epoch %d, iters %d' % (epoch, total_steps))
         model.module.save('latest')
         model.module.save(epoch)
         np.savetxt(iter_path, (epoch+1, 0), delimiter=',', fmt='%d')
