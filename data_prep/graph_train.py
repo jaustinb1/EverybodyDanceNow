@@ -194,5 +194,5 @@ def graph_fn(n):
 import multiprocessing
 
 if __name__ == '__main__':
-        with multiprocessing.Pool(20) as p:
+        with multiprocessing.Pool(10) as p:
                 p.map(graph_fn, range(start, end, step))

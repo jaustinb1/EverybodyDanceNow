@@ -20,19 +20,20 @@ def split_video(source, rate, destination):
         os.makedirs(original_frame_dir)
 
     # first convert the video to frames
-    proc = subprocess.Popen([
-        'ffmpeg', '-i', '{}'.format(source),
-        '-r', '{}'.format(rate),
-        #'-f',
-        #'frame-%7d.jpg',
-        '{}/frame-%7d.jpg'.format(original_frame_dir)
-    ])
-    proc.wait()
+    #proc = subprocess.Popen([
+    #    'ffmpeg', '-i', '{}'.format(source),
+    #    '-r', '{}'.format(rate),
+    #    '-q:v', '2',
+    #    #'-f',
+    #    #'frame-%7d.jpg',
+    #    '{}/frame-%7d.jpg'.format(original_frame_dir)
+    #])
+    #proc.wait()
 
     print('Done splitting the video')
     return original_frame_dir
 
-def run_openpose(source, destination, is_train):
+def run_openpose(source, destination, is_train, image_dir=None):
     print("Running openpose pose estimation")
 
     open_pose_result_location = os.path.join(
@@ -45,7 +46,9 @@ def run_openpose(source, destination, is_train):
     cwd = os.getcwd()
     os.chdir(OPENPOSE_BASE)
     proc = subprocess.Popen([
-        "./build/examples/openpose/openpose.bin", "--video={}".format(source),
+        "./build/examples/openpose/openpose.bin",
+        "--image_dir={}".format(image_dir),
+        #"--video={}".format(source),
         '--face', '--hand',
         '--write_json={}'.format(open_pose_result_location)
     ])
@@ -80,7 +83,8 @@ def prep_train_data(original_frames, openpose_res_dir, destination):
         "--keypoints_dir={}".format(openpose_res_dir),
         "--frames_dir={}".format(original_frames),
         "--save_dir={}".format(destination),
-        "--spread", "0", "{}".format(end), "1"
+        "--spread", "0", "{}".format(end), "1",
+        "--facetexts"
     ])
     proc.wait()
     print("Finished graphing train data")
@@ -106,7 +110,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     og_frame_dir = split_video(args.source, args.rate, args.destination)
-    pose_dir = run_openpose(args.source, args.destination, args.train)
+    pose_dir = run_openpose(args.source, args.destination, args.train, image_dir=og_frame_dir)
 
     if args.train:
         prep_train_data(og_frame_dir, pose_dir, args.destination)
