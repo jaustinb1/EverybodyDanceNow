@@ -20,14 +20,14 @@ def split_video(source, rate, destination):
         os.makedirs(original_frame_dir)
 
     # first convert the video to frames
-    #proc = subprocess.Popen([
-    #    'ffmpeg', '-i', '{}'.format(source),
-    #    '-r', '{}'.format(rate),
-    #    #'-f',
-    #    #'frame-%7d.jpg',
-    #    '{}/frame-%7d.jpg'.format(original_frame_dir)
-    #])
-    #proc.wait()
+    proc = subprocess.Popen([
+        'ffmpeg', '-i', '{}'.format(source),
+        '-r', '{}'.format(rate),
+        #'-f',
+        #'frame-%7d.jpg',
+        '{}/frame-%7d.jpg'.format(original_frame_dir)
+    ])
+    proc.wait()
 
     print('Done splitting the video')
     return original_frame_dir
@@ -44,12 +44,12 @@ def run_openpose(source, destination, is_train):
 
     cwd = os.getcwd()
     os.chdir(OPENPOSE_BASE)
-    #proc = subprocess.Popen([
-    #    "./build/examples/openpose/openpose.bin", "--video={}".format(source),
-    #    '--face', '--hand',
-    #    '--write_json={}'.format(open_pose_result_location)
-    #])
-    #proc.wait()
+    proc = subprocess.Popen([
+        "./build/examples/openpose/openpose.bin", "--video={}".format(source),
+        '--face', '--hand',
+        '--write_json={}'.format(open_pose_result_location)
+    ])
+    proc.wait()
     os.chdir(cwd)
 
     print("Finished running openpose")
