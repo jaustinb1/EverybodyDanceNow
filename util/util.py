@@ -1,4 +1,4 @@
-### Copyright (C) 2017 NVIDIA Corporation. All rights reserved. 
+### Copyright (C) 2017 NVIDIA Corporation. All rights reserved.
 ### Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 from __future__ import print_function
 import torch
@@ -22,14 +22,14 @@ def tensor2im(image_tensor, imtype=np.uint8, normalize=True):
     if normalize:
         image_numpy = (np.transpose(image_numpy, (1, 2, 0)) + 1) / 2.0 * 255.0
     else:
-        image_numpy = np.transpose(image_numpy, (1, 2, 0)) * 255.0      
+        image_numpy = np.transpose(image_numpy, (1, 2, 0)) * 255.0
     image_numpy = np.clip(image_numpy, 0, 255)
-    if image_numpy.shape[2] == 1:        
+    if image_numpy.shape[2] == 1:
         image_numpy = image_numpy[:,:,0]
     return image_numpy.astype(imtype)
 
 def tensor2label(output, n_label, imtype=np.uint8):
-    output = output.cpu().float()    
+    output = output.cpu().float()
     if output.size()[0] > 1:
         output = output.max(0, keepdim=True)[1]
     output = Colorize(n_label)(output)
@@ -38,7 +38,7 @@ def tensor2label(output, n_label, imtype=np.uint8):
 
 def save_image(image_numpy, image_path):
     image_pil = Image.fromarray(image_numpy)
-    image_pil = image_pil.resize((256,256), Image.ANTIALIAS)
+    #image_pil = image_pil.resize((256,256), Image.ANTIALIAS)
     image_pil.save(image_path)
 
 def mkdirs(paths):
@@ -62,7 +62,7 @@ def labelcolormap(N):
                      (128, 64,128), (244, 35,232), (250,170,160), (230,150,140), ( 70, 70, 70), (102,102,156), (190,153,153),
                      (180,165,180), (150,100,100), (150,120, 90), (153,153,153), (153,153,153), (250,170, 30), (220,220,  0),
                      (107,142, 35), (152,251,152), ( 70,130,180), (220, 20, 60), (255,  0,  0), (  0,  0,142), (  0,  0, 70),
-                     (  0, 60,100), (  0,  0, 90), (  0,  0,110), (  0, 80,100), (  0,  0,230), (119, 11, 32), (  0,  0,142)], 
+                     (  0, 60,100), (  0,  0, 90), (  0,  0,110), (  0, 80,100), (  0,  0,230), (119, 11, 32), (  0,  0,142)],
                      dtype=np.uint8)
     else:
         cmap = np.zeros((N, 3), dtype=np.uint8)
